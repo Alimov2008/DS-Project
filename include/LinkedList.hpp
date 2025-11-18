@@ -49,6 +49,7 @@ public:
         newNode->next=temp->next;
         temp->next=newNode;   
     }
+ 
 
     void delete_beginning(){
         if (head==nullptr)
@@ -119,4 +120,50 @@ public:
         cout<<"Selected Node is deleted"<<endl;
     }
 
+    bool is_present(int value){
+        Node* temp=head;
+        while (temp->next!=nullptr)
+        {
+            if(temp->data==value){
+                return true;
+            }
+            temp=temp->next;
+        }
+        return false;
+    }
+
+    void display(){
+        Node* temp=head;
+        while (temp->next!=nullptr)
+        {
+            cout<<temp->data<<" -> " <<endl;
+            temp=temp->next;
+        }
+        cout<<"null"<<endl;
+    }
+    
+    int length(){
+        int length=0;
+        Node* temp=head;
+        while (temp->next!=nullptr)
+        {
+            length++;
+            temp=temp->next;
+        }
+        return length;
+    }
+
+    void reverse(){
+        Node* previous=nullptr;
+        Node* current=head;
+        Node* next = nullptr;
+        while (current!=nullptr)
+        {
+            next=current->next;
+            current->next=previous;
+            previous=current;
+            current=next;
+        }
+        head=previous;
+    }
 };
