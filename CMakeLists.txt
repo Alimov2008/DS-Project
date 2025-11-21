@@ -16,3 +16,4 @@ FetchContent_MakeAvailable(json)
 add_executable(DS_PROJECT src/main.cpp)
 
 target_link_libraries(DS_PROJECT PRIVATE nlohmann_json::nlohmann_json)
+target_include_directories(DS_PROJECT PUBLIC ${CMAKE_SOURCE_DIR}/include)
