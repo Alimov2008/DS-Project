@@ -1,42 +1,18 @@
 {
     "0": {
         "0": {
-            "Author": "me",
-            "Available": 5,
-            "Title": "king",
-            "Total": 12
+            "Author": "F. Scott Fitzgerald",
+            "Available": 3,
+            "Title": "The Great Gatsby",
+            "Total": 5
         }
     },
     "1": {
         "1": {
-            "Author": "me",
-            "Available": 5,
-            "Title": "king",
-            "Total": 12
-        }
-    },
-    "2": {
-        "2": {
-            "Author": "me",
-            "Available": 5,
-            "Title": "king",
-            "Total": 12
-        }
-    },
-    "3": {
-        "3": {
-            "Author": "me",
-            "Available": 5,
-            "Title": "king",
-            "Total": 12
-        }
-    },
-    "424356": {
-        "4": {
-            "Author": "me",
-            "Available": 5,
-            "Title": "king",
-            "Total": 12
+            "Author": "George Orwell",
+            "Available": 2,
+            "Title": "1984",
+            "Total": 3
         }
     }
 }

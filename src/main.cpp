@@ -13,10 +13,11 @@ int main()
     Books book1("The Great Gatsby", "F. Scott Fitzgerald", 5, 3);
     Books book2("1984", "George Orwell", 3, 2);
     
+    book1.save_book();
+    book2.save_book();
     // Test the Tree
     Tree<Books> library;
-    library.insert(book1);
-    library.insert(book2);
+    
     
     cout << "Books in library (in-order):" << endl;
     library.inorder();
