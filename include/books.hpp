@@ -41,21 +41,19 @@ public:
             books=json::object();
         }
 
-        int newID=0;
+        int newID=1;
         for (auto& [key,value]:books.items())
         {
             newID=max(newID,stoi(key)+1);
         }
-        json new_book;
 
-        new_book[(to_string(newID))]={
+        books[to_string(newID)]={
             {"Title",this->title},
             {"Author",this->author},
             {"Total",this->total_copy},
             {"Available",this->available_copy}
         };
 
-        books[to_string(newID)]=new_book;
         ofstream output("../database/Books.json");
         output << books.dump(4);
     }
