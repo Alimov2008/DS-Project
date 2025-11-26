@@ -81,7 +81,23 @@ public:
         return loaded_tree;
     }
 
-    
+    void update_book(Tree<Books>& library,int book_id,int amount){
+        if (!library.exists(book_id)){
+            cout << "Book ID not found!"<<endl;
+            return;
+        }
+        else if(book_id==99999){
+            library.inorder();
+            return; 
+        }
+        Books target_book;
+        target_book.book_id=book_id;
+        Books desired_book=library.search(target_book);
+        if(desired_book!=nullptr){
+            desired_book->data.available_copy-=amount;
+            return;
+        }
+    }
 
     friend ostream& operator<<(ostream& os, const Books& b) {
         os << "[ID: " << b.book_id

@@ -1,4 +1,7 @@
 ├── books.hpp
+│   #ifndef BOOKS_HPP
+│   #define BOOKS_HPP
+│   
 │   #include <iostream>
 │   #include <fstream>
 │   #include <string>
@@ -16,15 +19,14 @@
 │       int total_copy;
 │       int available_copy;
 │   public:
-│       Books(int book_id,string title,string author,int total_copy,int available_copy){
-│           this->book_id=book_id;
+│       Books(string title,string author,int total_copy,int available_copy){
 │           this->title=title;
 │           this->author=author;
 │           this->total_copy=total_copy;
 │           this->available_copy=available_copy;
 │       };
 │   
-│       Books();
+│       Books() : title(""), author(""), total_copy(0), available_copy(0) {};
 │   
 │       bool operator<(const Books& b) const{
 │           return this->book_id < b.book_id;
@@ -80,6 +82,24 @@
 │           return loaded_tree;
 │       }
 │   
+│       void update_book(Tree<Books>& library,int book_id,int amount){
+│           if (!library.exists(book_id)){
+│               cout << "Book ID not found!"<<endl;
+│               return;
+│           }
+│           else if(book_id==99999){
+│               library.inorder();
+│               return; 
+│           }
+│           Books target_book;
+│           target_book.book_id=book_id;
+│           Books desired_book=library.search(target_book);
+│           if(desired_book!=nullptr){
+│               desired_book->data.available_copy-=amount;
+│               return;
+│           }
+│       }
+│   
 │       friend ostream& operator<<(ostream& os, const Books& b) {
 │           os << "[ID: " << b.book_id
 │              << ", Title: " << b.title
@@ -91,7 +111,11 @@
 │       }
 │       
 │   };
-├── LinkedList.hpp
+│   
+│   #endif├── LinkedList.hpp
+│   #ifndef LINKEDLIST_HPP
+│   #define LINKEDLIST_HPP
+│   
 │   #include <iostream>
 │   #include "Node.hpp"
 │   using namespace std;
@@ -260,7 +284,70 @@
 │           }
 │           head=previous;
 │       }
-│   };├── Node.hpp
+│   };
+│   
+│   #endif├── Login.hpp
+│   #ifndef LOGIN_HPP
+│   #define LOGIN_HPP
+│   
+│   #include <iostream>
+│   #include <fstream>
+│   #include <string>
+│   #include <vector>
+│   #include <nlohmann/json.hpp>
+│   using json=nlohmann::json;
+│   using namespace std;
+│   
+│   class Login
+│   {
+│   private:
+│       string user_name;
+│       vector<string> borrowed_books;
+│       vector<string> queued_books;
+│   public:
+│       Login(){};
+│       
+│       void get_user_name(){
+│           cout<<"UserName: ";
+│           cin>>user_name;
+│           if (user_name=="admin")
+│           {
+│               
+│           }
+│           
+│       }
+│   
+│       void new_user(){
+│           json users;
+│           ifstream input("../database/Books.json");
+│           if(input.is_open()){
+│               input>>users;
+│           }
+│           else{
+│               users=json::object();
+│           }
+│   
+│           int newID=0;
+│           for (auto& [key,value]:users.items())
+│           {
+│               newID=max(newID,stoi(key)+1);
+│           }
+│   
+│           new_user[(to_string(newID))]={
+│               {"UserName",this->user_name},
+│               {"Borrowed books : ",{}}
+│           };
+│   
+│       }
+│   };
+│   
+│   
+│   
+│   
+│   #endif├── Node.hpp
+│   #ifndef NODE_HPP
+│   #define NODE_HPP
+│   
 │   class Node
 │   {
 │   public:
@@ -271,7 +358,11 @@
 │           this->next=nullptr;
 │       }
 │   };
-├── queue.hpp
+│   
+│   #endif├── queue.hpp
+│   #ifndef QUEUE_HPP
+│   #define QUEUE_HPP
+│   
 │   #include <iostream>
 │   #include "Node.hpp"
 │   using namespace std;
@@ -312,7 +403,11 @@
 │           
 │       }
 │   };
-├── Stack.hpp
+│   
+│   #endif├── Stack.hpp
+│   #ifndef STACK_HPP
+│   #define STACK_HPP
+│   
 │   #include <iostream>
 │   #include "Node.hpp"
 │   
@@ -374,7 +469,12 @@
 │           }
 │           cout<<endl;   
 │       }
-│   };├── Tree.hpp
+│   };
+│   
+│   #endif├── Tree.hpp
+│   #ifndef TREE_HPP
+│   #define TREE_HPP
+│   
 │   #include "Tree_node.hpp"
 │   using namespace std;
 │   
@@ -441,14 +541,14 @@
 │           {
 │               node->left=insert(node->left,value);
 │           }
-│           else if (value>node->data){
+│           else if (node->data<value){
 │               node->right=insert(node->right,value);
 │           }
 │           else{
 │               return node;
 │           }
 │   
-│           node->height=max(getHeight(node->left),getHeight(node->right));
+│           node->height=max(getHeight(node->left)+1,getHeight(node->right));
 │           int balance=getBalance(node);
 │           
 │           //LL
@@ -456,11 +556,11 @@
 │               return rightR(node);
 │   
 │           //RR
-│           if (balance < -1 && value > node->right->data)
+│           if (balance < -1 && node->right->data < value)
 │               return leftR(node);
 │   
 │           //LR
-│           if (balance > 1 && value > node->left->data) {
+│           if (balance > 1 && node->left->data < value) {
 │               node->left = leftR(node->left);
 │               return rightR(node);
 │           }
@@ -470,6 +570,8 @@
 │               node->right = rightR(node->right);
 │               return leftR(node);
 │           }        
+│   
+│           return node;
 │       }
 │   
 │       void insert(const T& value){
@@ -489,15 +591,52 @@
 │           inorder(root);
 │           cout<<endl;
 │       }
+│   
+│       bool exists(int value){
+│           return exists(root,value);
+│       }
+│   
+│       bool exists(Node<T>* node,int value){
+│           if (node == nullptr) {
+│               return false;
+│           }
+│           if (node->data == value) {
+│               return true;
+│           }
+│           if (value < node->data) {
+│               return searchRecursive(node->left, value);
+│           } else {
+│               return searchRecursive(node->right, value);
+│           }
+│       }
+│   
+│       Node<T>* search(Node<T>* node,const T& value){
+│           if (node == nullptr || node->data == value)
+│           return node;
+│   
+│           if (value < node->data)
+│               return search(node->left, value);
+│           else
+│               return search(node->right, value);
+│       }
+│   
+│       Node<T>* search(const T& value){
+│           return search(root, value);
+│       }
+│   
 │   };
-├── Tree_node.hpp
+│   
+│   #endif├── Tree_node.hpp
+│   #ifndef TREE_NODE_HPP
+│   #define TREE_NODE_HPP
+│   
 │   template <typename T>
 │   class Node 
 │   {
 │   public:
 │       T data;
-│       Node* left;
-│       Node* right;
+│       Node<T>* left;
+│       Node<T>* right;
 │   
 │       int height;
 │   
@@ -506,8 +645,13 @@
 │           left=right=nullptr;
 │           height=1; 
 │       }
-│   };└── ttt.txt
+│   };
+│   
+│   #endif└── ttt.txt
     ├── books.hpp
+    │   #ifndef BOOKS_HPP
+    │   #define BOOKS_HPP
+    │   
     │   #include <iostream>
     │   #include <fstream>
     │   #include <string>
@@ -525,15 +669,14 @@
     │       int total_copy;
     │       int available_copy;
     │   public:
-    │       Books(int book_id,string title,string author,int total_copy,int available_copy){
-    │           this->book_id=book_id;
+    │       Books(string title,string author,int total_copy,int available_copy){
     │           this->title=title;
     │           this->author=author;
     │           this->total_copy=total_copy;
     │           this->available_copy=available_copy;
     │       };
     │   
-    │       Books();
+    │       Books() : title(""), author(""), total_copy(0), available_copy(0) {};
     │   
     │       bool operator<(const Books& b) const{
     │           return this->book_id < b.book_id;
@@ -589,6 +732,24 @@
     │           return loaded_tree;
     │       }
     │   
+    │       void update_book(Tree<Books>& library,int book_id,int amount){
+    │           if (!library.exists(book_id)){
+    │               cout << "Book ID not found!"<<endl;
+    │               return;
+    │           }
+    │           else if(book_id==99999){
+    │               library.inorder();
+    │               return; 
+    │           }
+    │           Books target_book;
+    │           target_book.book_id=book_id;
+    │           Books desired_book=library.search(target_book);
+    │           if(desired_book!=nullptr){
+    │               desired_book->data.available_copy-=amount;
+    │               return;
+    │           }
+    │       }
+    │   
     │       friend ostream& operator<<(ostream& os, const Books& b) {
     │           os << "[ID: " << b.book_id
     │              << ", Title: " << b.title
@@ -600,7 +761,11 @@
     │       }
     │       
     │   };
-    ├── LinkedList.hpp
+    │   
+    │   #endif├── LinkedList.hpp
+    │   #ifndef LINKEDLIST_HPP
+    │   #define LINKEDLIST_HPP
+    │   
     │   #include <iostream>
     │   #include "Node.hpp"
     │   using namespace std;
@@ -769,7 +934,70 @@
     │           }
     │           head=previous;
     │       }
-    │   };├── Node.hpp
+    │   };
+    │   
+    │   #endif├── Login.hpp
+    │   #ifndef LOGIN_HPP
+    │   #define LOGIN_HPP
+    │   
+    │   #include <iostream>
+    │   #include <fstream>
+    │   #include <string>
+    │   #include <vector>
+    │   #include <nlohmann/json.hpp>
+    │   using json=nlohmann::json;
+    │   using namespace std;
+    │   
+    │   class Login
+    │   {
+    │   private:
+    │       string user_name;
+    │       vector<string> borrowed_books;
+    │       vector<string> queued_books;
+    │   public:
+    │       Login(){};
+    │       
+    │       void get_user_name(){
+    │           cout<<"UserName: ";
+    │           cin>>user_name;
+    │           if (user_name=="admin")
+    │           {
+    │               
+    │           }
+    │           
+    │       }
+    │   
+    │       void new_user(){
+    │           json users;
+    │           ifstream input("../database/Books.json");
+    │           if(input.is_open()){
+    │               input>>users;
+    │           }
+    │           else{
+    │               users=json::object();
+    │           }
+    │   
+    │           int newID=0;
+    │           for (auto& [key,value]:users.items())
+    │           {
+    │               newID=max(newID,stoi(key)+1);
+    │           }
+    │   
+    │           new_user[(to_string(newID))]={
+    │               {"UserName",this->user_name},
+    │               {"Borrowed books : ",{}}
+    │           };
+    │   
+    │       }
+    │   };
+    │   
+    │   
+    │   
+    │   
+    │   #endif├── Node.hpp
+    │   #ifndef NODE_HPP
+    │   #define NODE_HPP
+    │   
     │   class Node
     │   {
     │   public:
@@ -780,7 +1008,11 @@
     │           this->next=nullptr;
     │       }
     │   };
-    ├── queue.hpp
+    │   
+    │   #endif├── queue.hpp
+    │   #ifndef QUEUE_HPP
+    │   #define QUEUE_HPP
+    │   
     │   #include <iostream>
     │   #include "Node.hpp"
     │   using namespace std;
@@ -821,7 +1053,11 @@
     │           
     │       }
     │   };
-    ├── Stack.hpp
+    │   
+    │   #endif├── Stack.hpp
+    │   #ifndef STACK_HPP
+    │   #define STACK_HPP
+    │   
     │   #include <iostream>
     │   #include "Node.hpp"
     │   
@@ -883,7 +1119,12 @@
     │           }
     │           cout<<endl;   
     │       }
-    │   };├── Tree.hpp
+    │   };
+    │   
+    │   #endif├── Tree.hpp
+    │   #ifndef TREE_HPP
+    │   #define TREE_HPP
+    │   
     │   #include "Tree_node.hpp"
     │   using namespace std;
     │   
@@ -950,14 +1191,14 @@
     │           {
     │               node->left=insert(node->left,value);
     │           }
-    │           else if (value>node->data){
+    │           else if (node->data<value){
     │               node->right=insert(node->right,value);
     │           }
     │           else{
     │               return node;
     │           }
     │   
-    │           node->height=max(getHeight(node->left),getHeight(node->right));
+    │           node->height=max(getHeight(node->left)+1,getHeight(node->right));
     │           int balance=getBalance(node);
     │           
     │           //LL
@@ -965,11 +1206,11 @@
     │               return rightR(node);
     │   
     │           //RR
-    │           if (balance < -1 && value > node->right->data)
+    │           if (balance < -1 && node->right->data < value)
     │               return leftR(node);
     │   
     │           //LR
-    │           if (balance > 1 && value > node->left->data) {
+    │           if (balance > 1 && node->left->data < value) {
     │               node->left = leftR(node->left);
     │               return rightR(node);
     │           }
@@ -979,6 +1220,8 @@
     │               node->right = rightR(node->right);
     │               return leftR(node);
     │           }        
+    │   
+    │           return node;
     │       }
     │   
     │       void insert(const T& value){
@@ -998,15 +1241,52 @@
     │           inorder(root);
     │           cout<<endl;
     │       }
+    │   
+    │       bool exists(int value){
+    │           return exists(root,value);
+    │       }
+    │   
+    │       bool exists(Node<T>* node,int value){
+    │           if (node == nullptr) {
+    │               return false;
+    │           }
+    │           if (node->data == value) {
+    │               return true;
+    │           }
+    │           if (value < node->data) {
+    │               return searchRecursive(node->left, value);
+    │           } else {
+    │               return searchRecursive(node->right, value);
+    │           }
+    │       }
+    │   
+    │       Node<T>* search(Node<T>* node,const T& value){
+    │           if (node == nullptr || node->data == value)
+    │           return node;
+    │   
+    │           if (value < node->data)
+    │               return search(node->left, value);
+    │           else
+    │               return search(node->right, value);
+    │       }
+    │   
+    │       Node<T>* search(const T& value){
+    │           return search(root, value);
+    │       }
+    │   
     │   };
-    ├── Tree_node.hpp
+    │   
+    │   #endif├── Tree_node.hpp
+    │   #ifndef TREE_NODE_HPP
+    │   #define TREE_NODE_HPP
+    │   
     │   template <typename T>
     │   class Node 
     │   {
     │   public:
     │       T data;
-    │       Node* left;
-    │       Node* right;
+    │       Node<T>* left;
+    │       Node<T>* right;
     │   
     │       int height;
     │   
@@ -1015,4 +1295,6 @@
     │           left=right=nullptr;
     │           height=1; 
     │       }
-    │   };└── ttt.txt
+    │   };
+    │   
+    │   #endif└── ttt.txt
