@@ -34,12 +34,21 @@ public:
     bool operator>(const Books& b) const {
         return this->book_id > b.book_id;
     }
-
+    
     bool operator==(const Books& b) const {
         return this->book_id == b.book_id;
     }
-
-
+    
+    friend ostream& operator<<(ostream& os, const Books& b) {
+        os << "[ID: " << b.book_id
+           << ", Title: " << b.title
+           << ", Author: " << b.author
+           << ", Total: " << b.total_copy
+           << ", Available: " << b.available_copy
+           << " ]";
+        return os;
+    }
+    
     void save_book(){
         json books;
         ifstream input("../database/Books.json");
@@ -67,7 +76,7 @@ public:
         output << books.dump(4);
     }
 
-    Tree<Books> load_book(){
+    static Tree<Books> load_book(){
         Tree<Books> loaded_tree;
         json book;
         ifstream file("../database/Books.json");
@@ -109,15 +118,6 @@ public:
         found->data.available_copy-=amount;
     }
 
-    friend ostream& operator<<(ostream& os, const Books& b) {
-        os << "[ID: " << b.book_id
-           << ", Title: " << b.title
-           << ", Author: " << b.author
-           << ", Total: " << b.total_copy
-           << ", Available: " << b.available_copy
-           << " ]";
-        return os;
-    }
     
 };
 
