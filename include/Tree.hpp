@@ -74,7 +74,7 @@ public:
             return node;
         }
 
-        node->height=max(getHeight(node->left)+1,getHeight(node->right));
+        node->height = 1 + max(getHeight(node->left),getHeight(node->right));
         int balance=getBalance(node);
         
         //LL
@@ -118,7 +118,7 @@ public:
         cout<<endl;
     }
 
-    bool exists(int value){
+    bool exists(const& T& value){
         return exists(root,value);
     }
 
