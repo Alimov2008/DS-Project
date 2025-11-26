@@ -27,9 +27,18 @@ public:
 
     Books() : title(""), author(""), total_copy(0), available_copy(0) {};
 
-    bool operator<(const Books& b) const{
+    bool operator<(const Books& b) const {
         return this->book_id < b.book_id;
     }
+    
+    bool operator>(const Books& b) const {
+        return this->book_id > b.book_id;
+    }
+
+    bool operator==(const Books& b) const {
+        return this->book_id == b.book_id;
+    }
+
 
     void save_book(){
         json books;
