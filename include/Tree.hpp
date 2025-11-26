@@ -118,6 +118,23 @@ public:
         cout<<endl;
     }
 
+    bool search(int value){
+        return search(root,value);
+    }
+
+    bool search(Node<T>* node,int value){
+        if (node == nullptr) {
+            return false;
+        }
+        if (node->data == value) {
+            return true;
+        }
+        if (value < node->data) {
+            return searchRecursive(node->left, value);
+        } else {
+            return searchRecursive(node->right, value);
+        }
+    }
 
 };
 
