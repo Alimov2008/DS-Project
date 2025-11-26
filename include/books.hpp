@@ -78,10 +78,18 @@ public:
         for(auto& [key,value]:book.items()){
             Books b;
             b.book_id=stoi(key);
-            b.author=value["Author"];
-            b.available_copy=value["Available"];
-            b.title=value["Title"];
-            b.total_copy=value["Total"];
+            if (value.contains("Author")) 
+            {b.author = value["Author"].get<string>();
+            }
+            if (value.contains("Available")) 
+            {b.available_copy = value["Available"].get<int>();
+            }
+            if (value.contains("Title")) 
+            {b.title = value["Title"].get<string>();
+            }
+            if (value.contains("Total")) 
+            {b.total_copy = value["Total"].get<int>();
+            }
 
             loaded_tree.insert(b);
         }
