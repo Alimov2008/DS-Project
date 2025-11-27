@@ -118,11 +118,11 @@ public:
         cout<<endl;
     }
 
-    bool exists(const& T& value){
+    bool exists(const T& value){
         return exists(root,value);
     }
 
-    bool exists(Node<T>* node,int value){
+    bool exists(Node<T>* node,const T& value){
         if (node == nullptr) {
             return false;
         }
@@ -130,9 +130,9 @@ public:
             return true;
         }
         if (value < node->data) {
-            return searchRecursive(node->left, value);
+            return exists(node->left, value);
         } else {
-            return searchRecursive(node->right, value);
+            return exists(node->right, value);
         }
     }
 

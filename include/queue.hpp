@@ -32,13 +32,18 @@ public:
         rear=temp;
     }
     void dequeue(){
-        if (isEmpthy())
-        {
-            cout<<"Queue is already empthy"<<endl;
+        if (isEmpthy()) {
+            cout << "Queue is already empty" << endl;
             return;
         }
-        
-        
+        Node* temp = front;
+        front = front->next;
+    
+        if (front == nullptr) {
+            rear = nullptr;
+        }
+    
+        delete temp;
     }
 };
 
