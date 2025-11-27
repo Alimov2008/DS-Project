@@ -105,38 +105,39 @@ public:
     }
 
     static void borrow_book(Tree<Login>& user_tree,Tree<Books>& book_tree, int user_id, int book_id, int amount) {
-        Login target_user;
-        target_user.set_user_id(user_id);
+    Login target_user;
+    target_user.set_user_id(user_id);
 
-        Node<Login>* user_node = user_tree.search(target_user);
-        if (user_node == nullptr) {
-            return;
-        }
-        
-        Books target_book;
-        target_book.set_book_id(book_id);
+    Node<Login>* user_node = user_tree.search(target_user);
+    if (user_node == nullptr) {
+        cout << "User not found!" << endl;
+        return;
+    }
+    
+    Books target_book;
+    target_book.set_book_id(book_id);
 
-        Node<Books>* book_node=book_tree.search(target_book);
-        if (!book_node)
-        {
-            return;
-        }
+    Node<Books>* book_node=book_tree.search(target_book);
+    if (!book_node) {
+        cout << "Book not found!" << endl;
+        return;
+    }
 
-        if (book_node->data.get_available_copy()<amount)
-        {
-            return;
-        }
+    if (book_node->data.get_available_copy() < amount) 
+    {
+        cout << "Not enough copies available! Only " << book_node->data.get_available_copy() << " available." << endl;
+        return;
+    }
 
-        string book_title=book_node->data.get_title();
-        int current;
-        if (user_node->data.borrowed.contains(book_title))
-        {
-            current=user_node->data.borrowed[book_title].get<int>();
-        }
-        user_node->data.borrowed[book_title] = current + amount;
-        book_node->data.set_available_copy(book_node->data.get_available_copy()-amount);
-        save_user
-        cout<<"book borrowed"<<endl;
+    string book_title=book_node->data.get_title();
+    int current=0;
+    if (user_node->data.borrowed.contains(book_title)) 
+    {
+        current=user_node->data.borrowed[book_title].get<int>();
+    }
+    user_node->data.borrowed[book_title] = current + amount;
+    book_node->data.set_available_copy(book_node->data.get_available_copy()-amount);
+    cout << "Successfully borrowed " << amount << " copy of '" << book_title << "'" << endl;
     }
 
     static void save_all_users(Tree<Login>& user_tree) {
