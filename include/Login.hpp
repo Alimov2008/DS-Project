@@ -87,21 +87,38 @@ public:
         }
 
         file >> users;
-
+        
         for (auto& [key, value] : users.items()) {
             Login user;
             user.user_id = stoi(key);
-
+            
             if (value.contains("Name"))
-                user.user_name = value["Name"].get<string>();
-
+            user.user_name = value["Name"].get<string>();
+            
             if (value.contains("Borrowed"))
-                user.borrowed = value["Borrowed"];
-
+            user.borrowed = value["Borrowed"];
+            
             tree.insert(user);
         }
-
+        
         return tree;
+    }
+
+    static void save_all_users(Tree<Login>& user_tree) {
+        json users = json::object();
+        
+        json all_users;
+        ifstream input("../database/Users.json");
+        if (input.is_open()) {
+            input >> all_users;
+        } else {
+            all_users = json::object();
+        }
+        
+        Tree<Login> current_users = load_users();
+        
+        ofstream output("../database/Users.json");
+        output << current_users.dump(4);  
     }
 
     static void borrow_book(Tree<Login>& user_tree,Tree<Books>& book_tree, int user_id, int book_id, int amount) {
@@ -140,59 +157,54 @@ public:
     cout << "Successfully borrowed " << amount << " copy of '" << book_title << "'" << endl;
     }
 
-    static void save_all_users(Tree<Login>& user_tree) {
-        json users = json::object();
-        
-        json all_users;
-        ifstream input("../database/Users.json");
-        if (input.is_open()) {
-            input >> all_users;
-        } else {
-            all_users = json::object();
-        }
-        
-        
-        Tree<Login> current_users = load_users();
-        
-        ofstream output("../database/Users.json");
-        output << current_users.dump(4);  
-    }
 
-    static void return_book(Tree<Login>& user_tree,Tree<Books>& book_tree, int user_id, int book_id, int amount){
+    static void return_book(
+        Tree<Login>& user_tree,
+        Tree<Books>& book_tree, 
+        int user_id, 
+        int book_id, 
+        int amount) {
         Login target_user;
-        target_user.user_id = user_id;
+        target_user.set_user_id(user_id);
 
         Node<Login>* user_node = user_tree.search(target_user);
         if (user_node == nullptr) {
+            cout << "User not found!" << endl;
             return;
         }
         
         Books target_book;
         target_book.set_book_id(book_id);
 
-        
-        Node<Books>* book_node=book_tree.search(target_book);
-        if (!book_node)
-        {
+        Node<Books>* book_node = book_tree.search(target_book);
+        if (!book_node) {
+            cout << "Book not found!" << endl;
             return;
         }
-        string book_title=book_node->data.get_title();
 
-        int current=user_node->data.borrowed[book_title].get<int>();
+        string book_title = book_node->data.get_title();
 
-        if (!user_node->data.borrowed.contains(book_title))
-        {
+        if (!user_node->data.borrowed.contains(book_title)) {
+            cout << "You haven't borrowed this book!" << endl;
             return;
         }
         
-        if (amount==current)
-        {
+        int current = user_node->data.borrowed[book_title].get<int>();
+        
+        if (amount > current) {
+            cout << "You can't return more than you borrowed! You have " << current << " copy(ies)." << endl;
+            return;
+        }
+        
+        if (amount == current) {
             user_node->data.borrowed.erase(book_title);
+        } else {
+            user_node->data.borrowed[book_title] = current - amount;
         }
-        else{
-            user_node->data.borrowed[book_title]=current-amount;
-        }
-        book_node->data.set_available_copy(book_node->data.get_available_copy()-amount);
+        
+        book_node->data.set_available_copy(book_node->data.get_available_copy() + amount);
+        
+        cout << "Successfully returned " << amount << " copy(ies) of '" << book_title << "'" << endl;
     }
 
 };
