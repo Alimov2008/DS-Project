@@ -71,15 +71,14 @@ public:
         this->available_copy=available_copy;
     }
 
-
-
     friend ostream& operator<<(ostream& os, const Books& b) {
         os << "[ID: " << b.book_id
            << ", Title: " << b.title
            << ", Author: " << b.author
            << ", Total: " << b.total_copy
            << ", Available: " << b.available_copy
-           << " ]";
+           << " ]"
+           << endl;
         return os;
     }
     

@@ -19,15 +19,19 @@ private:
 public:
     Login() : user_id(0), user_name(""), borrowed(json::object()) {}
 
-    string get_user_name(){
-        return this->user_name;
-    }
-    int get_user_id(){
-        return this->user_id;
-    }
-    json get_borrowed(){
-        return this->borrowed;
-    }
+    string get_user_name() const {
+        return this->user_name; }
+    int get_user_id() const {
+        return this->user_id; }
+    json get_borrowed() const {
+        return this->borrowed; }
+
+    void set_user_name(const string& name) {
+        this->user_name = name; }
+    void set_user_id(int id) { 
+        this->user_id = id; }
+    void set_borrowed(const json& borrowed_data) { 
+        this->borrowed = borrowed_data; }
 
     
     bool operator<(const Login& other) const {
@@ -102,7 +106,7 @@ public:
 
     static void borrow_book(Tree<Login>& user_tree,Tree<Books>& book_tree, int user_id, int book_id, int amount) {
         Login target_user;
-        target_user.user_id = user_id;
+        target_user.set_user_id(user_id);
 
         Node<Login>* user_node = user_tree.search(target_user);
         if (user_node == nullptr) {
@@ -131,7 +135,26 @@ public:
         }
         user_node->data.borrowed[book_title] = current + amount;
         book_node->data.set_available_copy(book_node->data.get_available_copy()-amount);
+        save_user
         cout<<"book borrowed"<<endl;
+    }
+
+    static void save_all_users(Tree<Login>& user_tree) {
+        json users = json::object();
+        
+        json all_users;
+        ifstream input("../database/Users.json");
+        if (input.is_open()) {
+            input >> all_users;
+        } else {
+            all_users = json::object();
+        }
+        
+        
+        Tree<Login> current_users = load_users();
+        
+        ofstream output("../database/Users.json");
+        output << current_users.dump(4);  
     }
 
     static void return_book(Tree<Login>& user_tree,Tree<Books>& book_tree, int user_id, int book_id, int amount){

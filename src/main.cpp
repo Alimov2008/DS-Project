@@ -3,8 +3,9 @@
 #include "../include/Tree.hpp"
 #include "../include/books.hpp"
 #include "../include/MenuUtilities.hpp"
+#include <vector>
 using namespace std;
-// using json = nlohmann::json;
+using json = nlohmann::json;
 
 int main() {
     string username;

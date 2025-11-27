@@ -93,7 +93,7 @@ Login getUser(const string& username, Tree<Login>& userTree) {
     Tree<Login> allUsers = Login::load_users();
     vector<Login> users;
     Login newUser;
-    newUser.get_user_name() = username;
+    newUser.set_user_name(username);
     newUser.save_user();
     
     cout << "New user created with ID: " << newUser.get_user_id() << endl;
