@@ -122,6 +122,44 @@ public:
         book_node->data.set_available_copy(book_node->data.get_available_copy()-amount);
         cout<<"book borrowed"<<endl;
     }
+
+    static void return_book(Tree<Login>& user_tree,Tree<Books>& book_tree, int user_id, int book_id, int amount){
+        Login target_user;
+        target_user.user_id = user_id;
+
+        Node<Login>* user_node = user_tree.search(target_user);
+        if (user_node == nullptr) {
+            return;
+        }
+        
+        Books target_book;
+        target_book.set_book_id(book_id);
+
+        
+        Node<Books>* book_node=book_tree.search(target_book);
+        if (!book_node)
+        {
+            return;
+        }
+        string book_title=book_node->data.get_title();
+
+        int current=user_node->data.borrowed[book_title].get<int>();
+
+        if (!user_node->data.borrowed.contains(book_title))
+        {
+            return;
+        }
+        
+        if (amount==current)
+        {
+            user_node->data.borrowed.erase(book_title);
+        }
+        else{
+            user_node->data.borrowed[book_title]=current-amount;
+        }
+        book_node->data.set_available_copy(book_node->data.get_available_copy()-amount);
+    }
+
 };
 
 
