@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include "Tree.hpp"
+#include "books.hpp"
 #include <nlohmann/json.hpp>
 using json=nlohmann::json;
 using namespace std;
@@ -88,15 +89,38 @@ public:
         return tree;
     }
 
-    static void borrow_book(Tree<Login>& tree, int user_id, const string& book_title, int amount) {
-        Login target;
-        target.user_id = user_id;
+    static void borrow_book(Tree<Login>& user_tree,Tree<Books>& book_tree, int user_id, int book_id, int amount) {
+        Login target_user;
+        target_user.user_id = user_id;
 
-        Node<Login>* found = tree.search(target);
-        if (found == nullptr) {
+        Node<Login>* user_node = user_tree.search(target_user);
+        if (user_node == nullptr) {
             return;
         }
-        found->data.borrowed[book_title] = amount;
+        
+        Books target_book;
+        target_book.set_book_id(book_id);
+
+        Node<Books>* book_node=book_tree.search(target_book);
+        if (!book_node)
+        {
+            return;
+        }
+
+        if (book_node->data.get_available_copy()<amount)
+        {
+            return;
+        }
+
+        string book_title=book_node->data.get_title();
+        int current;
+        if (user_node->data.borrowed.contains(book_title))
+        {
+            current=user_node->data.borrowed[book_title].get<int>();
+        }
+        user_node->data.borrowed[book_title] = current + amount;
+        book_node->data.set_available_copy(book_node->data.get_available_copy()-amount);
+        cout<<"book borrowed"<<endl;
     }
 };
 
