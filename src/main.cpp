@@ -2,27 +2,63 @@
 #include <iostream>
 #include "../include/Tree.hpp"
 #include "../include/books.hpp"
+#include "../include/MenuUtilities.hpp"
 using namespace std;
 // using json = nlohmann::json;
 
-int main()
-{
-    cout << "Library Management System Starting..." << endl;
+int main() {
+    string username;
+    Tree<Login> userTree;
+    Tree<Books> bookTree;
     
-    // Test the Books class
-    Books book1("The Great Gatsby", "F. Scott Fitzgerald", 5, 3);
-    Books book2("1984", "George Orwell", 3, 2);
+    cout << "=== Welcome to Library Management System ===" << endl;
+    cout << "Enter your username: ";
+    getline(cin, username);
     
-    book1.save_book();
-    book2.save_book();
-    // Test the Tree
-    Tree<Books> library;
+    if (username.empty()) {
+        cout << "Username cannot be empty!" << endl;
+        return 1;
+    }
     
+    userTree = Login::load_users();
+    bookTree = Books::load_book();
     
-    cout << "Books in library (in-order):" << endl;
-    library.inorder();
+    Login currentUser = getUser(username, userTree);
     
-
+    int choice;
+    bool running = true;
+    
+    while (running) {
+        displayMainMenu();
+        cin >> choice;
+        
+        if (cin.fail()) {
+            cout << "Invalid input! Please enter a number." << endl;
+            clear_input_buffer();
+            continue;
+        }
+        
+        switch (choice) {
+            case 1:
+                borrowBook(userTree, bookTree, currentUser);
+                break;
+            case 2:
+                returnBook(userTree, bookTree, currentUser);
+                break;
+            case 3:
+                displayBooks(bookTree);
+                break;
+            case 4:
+                displayBorrowedBooks(currentUser);
+                break;
+            case 5:
+                running = false;
+                break;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+                break;
+        }
+    }
     
     return 0;
 }

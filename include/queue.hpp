@@ -16,7 +16,7 @@ public:
         front=rear=nullptr;
     };
 
-    bool isEmpthy(){
+    bool isEmpty(){
         return (front==nullptr);
     }
 
@@ -32,7 +32,7 @@ public:
         rear=temp;
     }
     void dequeue(){
-        if (isEmpthy()) {
+        if (isEmpty()) {
             cout << "Queue is already empty" << endl;
             return;
         }

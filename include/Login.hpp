@@ -18,6 +18,17 @@ private:
     json borrowed;
 public:
     Login() : user_id(0), user_name(""), borrowed(json::object()) {}
+
+    string get_user_name(){
+        return this->user_name;
+    }
+    int get_user_id(){
+        return this->user_id;
+    }
+    json get_borrowed(){
+        return this->borrowed;
+    }
+
     
     bool operator<(const Login& other) const {
         return this->user_id < other.user_id;
