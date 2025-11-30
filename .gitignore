@@ -11,6 +11,7 @@ obj/
 [Bb]in/
 [Oo]bj/
 .vscode
+project.txt
 
 # CMake
 cmake-build-*/

@@ -104,24 +104,11 @@ public:
         return tree;
     }
 
-    static void save_all_users(Tree<Login>& user_tree) {
-        json users = json::object();
-        
-        json all_users;
-        ifstream input("../database/Users.json");
-        if (input.is_open()) {
-            input >> all_users;
-        } else {
-            all_users = json::object();
-        }
-        
-        Tree<Login> current_users = load_users();
-        
-        ofstream output("../database/Users.json");
-        output << current_users.dump(4);  
-    }
-
-    static void borrow_book(Tree<Login>& user_tree,Tree<Books>& book_tree, int user_id, int book_id, int amount) {
+    static void borrow_book(
+        Tree<Login>& user_tree,
+        Tree<Books>& book_tree, 
+        int user_id, int book_id, 
+        int amount) {
     Login target_user;
     target_user.set_user_id(user_id);
 

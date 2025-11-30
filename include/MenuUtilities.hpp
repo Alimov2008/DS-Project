@@ -60,7 +60,7 @@ void borrowBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser
 
 void returnBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser) {
     if (currentUser.get_borrowed().empty()) {
-        cout << "You have no books to return." << endl;
+        cout << "You have no books to return" << endl;
         return;
     }
     
@@ -81,13 +81,17 @@ void returnBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser
         clear_input_buffer();
         return;
     }
-    Books searchBook;
-    bool bookFound = false;
-    int book_id = -1;
 
+    int book_id = -1;
+    
     Tree<Books> allBooks = Books::load_book();
-    Login::return_book(userTree, bookTree, currentUser.get_user_id(), book_id, amount);
+    bool found = false;
+    if (!found) {
+        cout << "Book title not found in available books!" << endl;
+        return;
     }
+    Login::return_book(userTree, bookTree, currentUser.get_user_id(), book_id, amount);
+}
 
 Login getUser(const string& username, Tree<Login>& userTree) {
     Tree<Login> allUsers = Login::load_users();
