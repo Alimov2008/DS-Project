@@ -126,6 +126,7 @@ public:
     Tree<Books>& book_tree, 
     int user_id, int book_id, 
     int amount) {
+    
         Login target_user;
         target_user.set_user_id(user_id);
 
@@ -158,7 +159,7 @@ public:
         book_node->data.set_available_copy(book_node->data.get_available_copy() - amount);
         
         save_all_users(user_tree);
-        save_all_books(book_tree);
+        Books::save_all_books(book_tree);  
         
         cout << "Successfully borrowed " << amount << " copy of '" << book_title << "'" << endl;
     }
