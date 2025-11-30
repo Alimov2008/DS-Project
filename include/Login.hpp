@@ -145,55 +145,72 @@ public:
     }
 
 
-    static void return_book(
-        Tree<Login>& user_tree,
-        Tree<Books>& book_tree, 
-        int user_id, 
-        int book_id, 
-        int amount) {
-        Login target_user;
-        target_user.set_user_id(user_id);
-
-        Node<Login>* user_node = user_tree.search(target_user);
-        if (user_node == nullptr) {
-            cout << "User not found!" << endl;
+    void returnBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser) {
+        if (currentUser.get_borrowed().empty()) {
+            cout << "You have no books to return" << endl;
             return;
         }
         
-        Books target_book;
-        target_book.set_book_id(book_id);
-
-        Node<Books>* book_node = book_tree.search(target_book);
-        if (!book_node) {
-            cout << "Book not found!" << endl;
-            return;
-        }
-
-        string book_title = book_node->data.get_title();
-
-        if (!user_node->data.borrowed.contains(book_title)) {
-            cout << "You haven't borrowed this book!" << endl;
-            return;
-        }
+        displayBorrowedBooks(currentUser);
         
-        int current = user_node->data.borrowed[book_title].get<int>();
+        string book_title;
+        int amount;
         
-        if (amount > current) {
-            cout << "You can't return more than you borrowed! You have " << current << " copy(ies)." << endl;
+        clear_input_buffer();
+        cout << "\nEnter book title to return: ";
+        getline(cin, book_title);
+        
+        cout << "Enter quantity to return: ";
+        cin >> amount;
+        
+        if (cin.fail() || amount <= 0) {
+            cout << "Invalid quantity!" << endl;
+            clear_input_buffer();
             return;
         }
         
-        if (amount == current) {
-            user_node->data.borrowed.erase(book_title);
-        } else {
-            user_node->data.borrowed[book_title] = current - amount;
-        }
-        
-        book_node->data.set_available_copy(book_node->data.get_available_copy() + amount);
-        
-        cout << "Successfully returned " << amount << " copy(ies) of '" << book_title << "'" << endl;
+        Login::return_book_by_title(userTree, bookTree, currentUser.get_user_id(), book_title, amount);
     }
 
+    static void return_book_by_title(
+    Tree<Login>& user_tree,
+    Tree<Books>& book_tree, 
+    int user_id, 
+    const string& book_title, 
+    int amount) {
+    
+    Login target_user;
+    target_user.set_user_id(user_id);
+
+    Node<Login>* user_node = user_tree.search(target_user);
+    if (user_node == nullptr) {
+        cout << "User not found" << endl;
+        return;
+    }
+    
+    if (!user_node->data.borrowed.contains(book_title)) {
+        cout << "You haven't borrowed this book" << endl;
+        return;
+    }
+    
+    Tree<Books> allBooks = Books::load_book();
+    auto allBooksList = allBooks.getAll(); 
+    
+    int book_id = -1;
+    for (const auto& book : allBooksList) {
+        if (book.get_title() == book_title) {
+            book_id = book.get_book_id();
+            break;
+        }
+    }
+    
+    if (book_id == -1) {
+        cout << "Book not found" << endl;
+        return;
+    }
+    
+    return_book(user_tree, book_tree, user_id, book_id, amount);
+}
 };
 
 
