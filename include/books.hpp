@@ -109,6 +109,24 @@ public:
         output << books.dump(4);
     }
 
+    static void save_all_books(Tree<Books>& book_tree) {
+        json books = json::object();
+        auto allBooks = book_tree.getAll();
+        
+        for (auto& book : allBooks) {
+            books[to_string(book.get_book_id())] = {
+                {"Title", book.get_title()},
+                {"Author", book.get_author()},
+                {"Total", book.get_total_copy()},
+                {"Available", book.get_available_copy()}
+            };
+        }
+        
+        ofstream output("../database/Books.json");
+        output << books.dump(4);
+        output.close();
+    }
+
     static Tree<Books> load_book(){
         Tree<Books> loaded_tree;
         json book;
