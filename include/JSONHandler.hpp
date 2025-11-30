@@ -6,10 +6,15 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <windows.h> 
 
 class JSONHandler {
 private:
     std::string filename;
+
+    void createDatabaseFolder() {
+        CreateDirectory("database", NULL);
+    }
 
     std::string escapeString(const std::string& str) {
         std::string result;
@@ -61,12 +66,18 @@ private:
     }
 
 public:
-    JSONHandler(const std::string& file = "database/library_data.json") : filename(file) {}
+    JSONHandler() {
+        createDatabaseFolder();
+        filename = "database/library_data.json";
+    }
     
     void saveToFile(AVLTree& tree) {
+        createDatabaseFolder(); 
         std::ofstream file(filename);
         if (!file.is_open()) {
             std::cerr << "Error: Could not open file for writing: " << filename << std::endl;
+            std::cerr << "Current directory: ";
+            system("cd"); 
             return;
         }
         
