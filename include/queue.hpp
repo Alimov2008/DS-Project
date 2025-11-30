@@ -54,7 +54,11 @@ public:
     }
     
     std::string peek() const {
-        return isEmpty() ? "" : front->studentID;
+        if (isEmpty()) {
+            return "";
+        } else {
+            return front->studentID;
+        }
     }
     
     bool isEmpty() const {
