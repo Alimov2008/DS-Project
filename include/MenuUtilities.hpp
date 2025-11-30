@@ -35,7 +35,15 @@ void displayBorrowedBooks(Login& currentUser) {
         cout << "No books currently borrowed." << endl;
     } else {
         for (auto& [book_title, amount] : currentUser.get_borrowed().items()) {
-            cout << "Title: " << book_title << " - Quantity: " << amount.get<int>() << endl;
+            int quantity = 0;
+            if (!amount.is_null()) {
+                try {
+                    quantity = amount.get<int>();
+                } catch (const json::type_error& e) {
+                    quantity = 0; 
+                }
+            }
+            cout << "Title: " << book_title << " - Quantity: " << quantity << endl;
         }
     }
 }
