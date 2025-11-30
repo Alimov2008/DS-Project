@@ -105,7 +105,7 @@ public:
             {"Available",this->available_copy}
         };
 
-        ofstream output("../database/Books.json");
+        ofstream  output("../database/Books.json");
         output << books.dump(4);
     }
 
