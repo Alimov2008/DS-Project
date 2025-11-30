@@ -169,7 +169,7 @@ public:
         found->data.available_copy-=amount;
     }
 
-    
+    //default branch
 };
 
 #endif
