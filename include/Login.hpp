@@ -145,32 +145,32 @@ public:
     }
 
 
-    void returnBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser) {
-        if (currentUser.get_borrowed().empty()) {
-            cout << "You have no books to return" << endl;
-            return;
-        }
+    //  void return_book(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser) {
+    //     if (currentUser.get_borrowed().empty()) {
+    //         cout << "You have no books to return" << endl;
+    //         return;
+    //     }
         
-        displayBorrowedBooks(currentUser);
+    //     displayBorrowedBooks(currentUser);
         
-        string book_title;
-        int amount;
+    //     string book_title;
+    //     int amount;
         
-        clear_input_buffer();
-        cout << "\nEnter book title to return: ";
-        getline(cin, book_title);
+    //     clear_input_buffer();
+    //     cout << "\nEnter book title to return: ";
+    //     getline(cin, book_title);
         
-        cout << "Enter quantity to return: ";
-        cin >> amount;
+    //     cout << "Enter quantity to return: ";
+    //     cin >> amount;
         
-        if (cin.fail() || amount <= 0) {
-            cout << "Invalid quantity!" << endl;
-            clear_input_buffer();
-            return;
-        }
+    //     if (cin.fail() || amount <= 0) {
+    //         cout << "Invalid quantity!" << endl;
+    //         clear_input_buffer();
+    //         return;
+    //     }
         
-        Login::return_book_by_title(userTree, bookTree, currentUser.get_user_id(), book_title, amount);
-    }
+    //     Login::return_book_by_title(userTree, bookTree, currentUser.get_user_id(), book_title, amount);
+    // }
 
     static void return_book_by_title(
     Tree<Login>& user_tree,
@@ -197,7 +197,7 @@ public:
     auto allBooksList = allBooks.getAll(); 
     
     int book_id = -1;
-    for (const auto& book : allBooksList) {
+    for (auto& book : allBooksList) {
         if (book.get_title() == book_title) {
             book_id = book.get_book_id();
             break;
@@ -209,8 +209,7 @@ public:
         return;
     }
     
-    return_book(user_tree, book_tree, user_id, book_id, amount);
-}
+    }
 };
 
 

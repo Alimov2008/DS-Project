@@ -5,8 +5,8 @@
 #include <string>
 #include <limits>
 #include <vector>
-#include "../include/Login.hpp"
-#include "../include/books.hpp"
+#include "Login.hpp"
+#include "books.hpp"
 using namespace std;
 
 void clear_input_buffer(){
@@ -83,22 +83,26 @@ void returnBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser
         return;
     }
 
-    int book_id = -1;
-
     Tree<Books> allBooks = Books::load_book();
+    auto allBooksList = allBooks.getAll();
+    int book_id = -1;
     bool found = false;
+    for (auto& book : allBooksList) {
+        if (book.get_title() == book_title) {
+            book_id = book.get_book_id();
+            found = true;
+            break;
+        }
+    }
     if (!found) {
-        cout << "Book title not found in available books!" << endl;
+        cout << "Book title not found in available books" << endl;
         return;
     }
-    Login::return_book(userTree, bookTree, currentUser.get_user_id(), book_id, amount);
+    Login::return_book_by_title(userTree, bookTree, currentUser.get_user_id(), book_title, amount);
 }
 
 Login getUser(const string& username, Tree<Login>& userTree) {
-    // Search for existing user
     Tree<Login> allUsers = Login::load_users();
-    
-    vector<Login> users;
     
     auto allUsersVector = allUsers.getAll(); 
     
@@ -116,4 +120,5 @@ Login getUser(const string& username, Tree<Login>& userTree) {
     cout << "New user created with ID: " << newUser.get_user_id() << endl;
     return newUser;
 }
+
 #endif
