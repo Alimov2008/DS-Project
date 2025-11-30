@@ -77,6 +77,22 @@ public:
         output << users.dump(4);
     }
 
+    static void save_all_users(Tree<Login>& user_tree) {
+        json users = json::object();
+        auto allUsers = user_tree.getAll();
+        
+        for (const auto& user : allUsers) {
+            users[to_string(user.get_user_id())] = {
+                {"Name", user.get_user_name()},
+                {"Borrowed", user.get_borrowed()}
+            };
+        }
+        
+        ofstream output("../database/Users.json");
+        output << users.dump(4);
+        output.close();
+    }
+
     static Tree<Login> load_users() {
         Tree<Login> tree;
         json users;
@@ -109,68 +125,41 @@ public:
     Tree<Books>& book_tree, 
     int user_id, int book_id, 
     int amount) {
-    
-    Login target_user;
-    target_user.set_user_id(user_id);
+        Login target_user;
+        target_user.set_user_id(user_id);
 
-    Node<Login>* user_node = user_tree.search(target_user);
-    if (user_node == nullptr) {
-        cout << "User not found" << endl;
-        return;
-    }
-    
-    Books target_book;
-    target_book.set_book_id(book_id);
+        Node<Login>* user_node = user_tree.search(target_user);
+        if (user_node == nullptr) {
+            cout << "User not found!" << endl;
+            return;
+        }
+        
+        Books target_book;
+        target_book.set_book_id(book_id);
 
-    Node<Books>* book_node = book_tree.search(target_book);
-    if (!book_node) {
-        cout << "Book not found" << endl;
-        return;
-    }
+        Node<Books>* book_node = book_tree.search(target_book);
+        if (!book_node) {
+            cout << "Book not found!" << endl;
+            return;
+        }
 
-    if (book_node->data.get_available_copy() < amount) {
-        cout << "Not enough copies available! Only " << book_node->data.get_available_copy() << " available." << endl;
-        return;
-    }
+        if (book_node->data.get_available_copy() < amount) {
+            cout << "Not enough copies available! Only " << book_node->data.get_available_copy() << " available." << endl;
+            return;
+        }
 
-    string book_title = book_node->data.get_title();
-    int current = 0;
-    if (user_node->data.borrowed.contains(book_title)) {
-        current = user_node->data.borrowed[book_title].get<int>();
-    }
-    user_node->data.borrowed[book_title] = current + amount;
-    book_node->data.set_available_copy(book_node->data.get_available_copy() - amount);
-    
-    save_all_users(user_tree);
-    save_all_books(book_tree);
-    
-    cout << "Successfully borrowed " << amount << " copy of '" << book_title << "'" << endl;
-}
-    
-    Books target_book;
-    target_book.set_book_id(book_id);
-
-    Node<Books>* book_node=book_tree.search(target_book);
-    if (!book_node) {
-        cout << "Book not found!" << endl;
-        return;
-    }
-
-    if (book_node->data.get_available_copy() < amount) 
-    {
-        cout << "Not enough copies available! Only " << book_node->data.get_available_copy() << " available." << endl;
-        return;
-    }
-
-    string book_title=book_node->data.get_title();
-    int current=0;
-    if (user_node->data.borrowed.contains(book_title)) 
-    {
-        current=user_node->data.borrowed[book_title].get<int>();
-    }
-    user_node->data.borrowed[book_title] = current + amount;
-    book_node->data.set_available_copy(book_node->data.get_available_copy()-amount);
-    cout << "Successfully borrowed " << amount << " copy of '" << book_title << "'" << endl;
+        string book_title = book_node->data.get_title();
+        int current = 0;
+        if (user_node->data.borrowed.contains(book_title)) {
+            current = user_node->data.borrowed[book_title].get<int>();
+        }
+        user_node->data.borrowed[book_title] = current + amount;
+        book_node->data.set_available_copy(book_node->data.get_available_copy() - amount);
+        
+        save_all_users(user_tree);
+        save_all_books(book_tree);
+        
+        cout << "Successfully borrowed " << amount << " copy of '" << book_title << "'" << endl;
     }
 
 
@@ -180,37 +169,36 @@ public:
     int user_id, 
     const string& book_title, 
     int amount) {
-    
-    Login target_user;
-    target_user.set_user_id(user_id);
+        Login target_user;
+        target_user.set_user_id(user_id);
 
-    Node<Login>* user_node = user_tree.search(target_user);
-    if (user_node == nullptr) {
-        cout << "User not found" << endl;
-        return;
-    }
-    
-    if (!user_node->data.borrowed.contains(book_title)) {
-        cout << "You haven't borrowed this book" << endl;
-        return;
-    }
-    
-    Tree<Books> allBooks = Books::load_book();
-    auto allBooksList = allBooks.getAll(); 
-    
-    int book_id = -1;
-    for (auto& book : allBooksList) {
-        if (book.get_title() == book_title) {
-            book_id = book.get_book_id();
-            break;
+        Node<Login>* user_node = user_tree.search(target_user);
+        if (user_node == nullptr) {
+            cout << "User not found" << endl;
+            return;
         }
-    }
-    
-    if (book_id == -1) {
-        cout << "Book not found" << endl;
-        return;
-    }
-    
+        
+        if (!user_node->data.borrowed.contains(book_title)) {
+            cout << "You haven't borrowed this book" << endl;
+            return;
+        }
+        
+        Tree<Books> allBooks = Books::load_book();
+        auto allBooksList = allBooks.getAll(); 
+        
+        int book_id = -1;
+        for (auto& book : allBooksList) {
+            if (book.get_title() == book_title) {
+                book_id = book.get_book_id();
+                break;
+            }
+        }
+        
+        if (book_id == -1) {
+            cout << "Book not found" << endl;
+            return;
+        }
+        
     }
 };
 
