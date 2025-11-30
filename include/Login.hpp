@@ -110,16 +110,19 @@ public:
             user.user_id = stoi(key);
             
             if (value.contains("Name"))
-            user.user_name = value["Name"].get<string>();
+                user.user_name = value["Name"].get<string>();
             
-            if (value.contains("Borrowed"))
-            user.borrowed = value["Borrowed"];
+            if (value.contains("Borrowed") && !value["Borrowed"].is_null()) {
+                user.borrowed = value["Borrowed"];
+            } else {
+                user.borrowed = json::object(); 
+            }
             
             tree.insert(user);
-        }
-        
-        return tree;
     }
+    
+    return tree;
+}
 
     static void borrow_book(
     Tree<Login>& user_tree,
