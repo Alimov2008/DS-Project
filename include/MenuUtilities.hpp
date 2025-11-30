@@ -103,20 +103,28 @@ void returnBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser
 
 Login getUser(const string& username, Tree<Login>& userTree) {
     Tree<Login> allUsers = Login::load_users();
-    
     auto allUsersVector = allUsers.getAll(); 
-    
     for (const auto& user : allUsersVector) {
         if (user.get_user_name() == username) {
             cout << "Welcome back, " << username << "!" << endl;
             return user;
         }
     }
-    
     Login newUser;
     newUser.set_user_name(username);
     newUser.save_user();
     
+    userTree = Login::load_users();
+    
+    auto updatedUsersVector = userTree.getAll();
+    for (auto& u : updatedUsersVector)
+    {
+        if (u.get_user_name() == username)
+        {
+            cout << "New user created with ID: " << u.get_user_id() << endl;
+            return u;
+        }
+    }
     cout << "New user created with ID: " << newUser.get_user_id() << endl;
     return newUser;
 }
