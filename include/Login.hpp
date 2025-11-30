@@ -105,18 +105,47 @@ public:
     }
 
     static void borrow_book(
-        Tree<Login>& user_tree,
-        Tree<Books>& book_tree, 
-        int user_id, int book_id, 
-        int amount) {
+    Tree<Login>& user_tree,
+    Tree<Books>& book_tree, 
+    int user_id, int book_id, 
+    int amount) {
+    
     Login target_user;
     target_user.set_user_id(user_id);
 
     Node<Login>* user_node = user_tree.search(target_user);
     if (user_node == nullptr) {
-        cout << "User not found!" << endl;
+        cout << "User not found" << endl;
         return;
     }
+    
+    Books target_book;
+    target_book.set_book_id(book_id);
+
+    Node<Books>* book_node = book_tree.search(target_book);
+    if (!book_node) {
+        cout << "Book not found" << endl;
+        return;
+    }
+
+    if (book_node->data.get_available_copy() < amount) {
+        cout << "Not enough copies available! Only " << book_node->data.get_available_copy() << " available." << endl;
+        return;
+    }
+
+    string book_title = book_node->data.get_title();
+    int current = 0;
+    if (user_node->data.borrowed.contains(book_title)) {
+        current = user_node->data.borrowed[book_title].get<int>();
+    }
+    user_node->data.borrowed[book_title] = current + amount;
+    book_node->data.set_available_copy(book_node->data.get_available_copy() - amount);
+    
+    save_all_users(user_tree);
+    save_all_books(book_tree);
+    
+    cout << "Successfully borrowed " << amount << " copy of '" << book_title << "'" << endl;
+}
     
     Books target_book;
     target_book.set_book_id(book_id);
@@ -144,33 +173,6 @@ public:
     cout << "Successfully borrowed " << amount << " copy of '" << book_title << "'" << endl;
     }
 
-
-    //  void return_book(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser) {
-    //     if (currentUser.get_borrowed().empty()) {
-    //         cout << "You have no books to return" << endl;
-    //         return;
-    //     }
-        
-    //     displayBorrowedBooks(currentUser);
-        
-    //     string book_title;
-    //     int amount;
-        
-    //     clear_input_buffer();
-    //     cout << "\nEnter book title to return: ";
-    //     getline(cin, book_title);
-        
-    //     cout << "Enter quantity to return: ";
-    //     cin >> amount;
-        
-    //     if (cin.fail() || amount <= 0) {
-    //         cout << "Invalid quantity!" << endl;
-    //         clear_input_buffer();
-    //         return;
-    //     }
-        
-    //     Login::return_book_by_title(userTree, bookTree, currentUser.get_user_id(), book_title, amount);
-    // }
 
     static void return_book_by_title(
     Tree<Login>& user_tree,
