@@ -98,7 +98,7 @@ public:
             newID=max(newID,stoi(key)+1);
         }
 
-        books[to_string(newID)]={
+        books [to_string(newID)]={
             {"Title",this->title},
             {"Author",this->author},
             {"Total",this->total_copy},
