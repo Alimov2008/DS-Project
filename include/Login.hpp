@@ -69,6 +69,10 @@ public:
 
         this->user_id = newID;
 
+        if (this->borrowed.is_null()) {
+            this->borrowed = json::object();
+        }
+
         users[to_string(newID)] = {
             {"Name", this->user_name},
             {"Borrowed", this->borrowed}
@@ -76,6 +80,7 @@ public:
 
         ofstream output("../database/Users.json");
         output << users.dump(4);
+        output.close();
     }
 
     static void save_all_users(Tree<Login>& user_tree) {
