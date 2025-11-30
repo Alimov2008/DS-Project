@@ -71,13 +71,16 @@ public:
         filename = "database/library_data.json";
     }
     
+    JSONHandler(const std::string& file) {
+        createDatabaseFolder();
+        filename = file;
+    }
+    
     void saveToFile(AVLTree& tree) {
         createDatabaseFolder(); 
         std::ofstream file(filename);
         if (!file.is_open()) {
             std::cerr << "Error: Could not open file for writing: " << filename << std::endl;
-            std::cerr << "Current directory: ";
-            system("cd"); 
             return;
         }
         
@@ -155,6 +158,7 @@ public:
             
             std::string bookStr = jsonContent.substr(bookStart, bookEnd - bookStart + 1);
             
+            // Extract fields
             std::string bookID, title, author;
             int totalCopies = 0, availableCopies = 0;
             std::string waitingQueueStr;
