@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <vector>
 #include "../include/Login.hpp"
 #include "../include/books.hpp"
 using namespace std;
@@ -83,7 +84,7 @@ void returnBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser
     }
 
     int book_id = -1;
-    
+
     Tree<Books> allBooks = Books::load_book();
     bool found = false;
     if (!found) {
@@ -94,8 +95,20 @@ void returnBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser
 }
 
 Login getUser(const string& username, Tree<Login>& userTree) {
+    // Search for existing user
     Tree<Login> allUsers = Login::load_users();
+    
     vector<Login> users;
+    
+    auto allUsersVector = allUsers.getAll(); 
+    
+    for (const auto& user : allUsersVector) {
+        if (user.get_user_name() == username) {
+            cout << "Welcome back, " << username << "!" << endl;
+            return user;
+        }
+    }
+    
     Login newUser;
     newUser.set_user_name(username);
     newUser.save_user();

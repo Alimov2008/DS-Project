@@ -2,6 +2,7 @@
 #define TREE_HPP
 
 #include "Tree_node.hpp"
+#include <vector>
 using namespace std;
 
 template <typename T>
@@ -150,6 +151,18 @@ public:
         return search(root, value);
     }
 
+    void getAll(Node<T>* node, vector<T>& result) const {
+        if (node == nullptr) return;
+        getAll(node->left, result);
+        result.push_back(node->data);
+        getAll(node->right, result);
+    }
+
+    vector<T> getAll() const {
+        vector<T> result;
+        getAll(root, result);
+        return result;
+    }
 };
 
 #endif
