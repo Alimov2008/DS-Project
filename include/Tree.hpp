@@ -3,6 +3,8 @@
 
 #include "Tree_node.hpp"
 #include <vector>
+#include <nlohmann/json.hpp>
+using json=nlohmann::json;
 using namespace std;
 
 template <typename T>
