@@ -163,6 +163,14 @@ public:
         getAll(root, result);
         return result;
     }
+
+    void saveAllToJson(const std::string& filename) const {
+        json j = json::object();
+        std::vector<T> allData = getAll();
+        
+        for (const auto& item : allData) {
+        }
+    }
 };
 
 #endif

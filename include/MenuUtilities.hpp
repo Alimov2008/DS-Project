@@ -57,6 +57,14 @@ void borrowBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser
         return;
     }
     Login::borrow_book(userTree, bookTree, currentUser.get_user_id(), book_id, amount);
+    
+    Tree<Login> updatedUsers = Login::load_users();
+    Login updatedTarget;
+    updatedTarget.set_user_id(currentUser.get_user_id());
+    Node<Login>* updatedUser = updatedUsers.search(updatedTarget);
+    if (updatedUser) {
+        currentUser = updatedUser->data;
+    }
 }
 
 void returnBook(Tree<Login>& userTree, Tree<Books>& bookTree, Login& currentUser) {

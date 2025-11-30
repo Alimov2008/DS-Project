@@ -7,6 +7,7 @@
 #include "Tree.hpp"
 #include "books.hpp"
 #include <nlohmann/json.hpp>
+#include "books.hpp"
 using json=nlohmann::json;
 using namespace std;
 
