@@ -79,30 +79,30 @@ private:
         } else if (book.bookID > node->book.bookID) {
             node->right = insert(node->right, book);
         } else {
-            return node; // Duplicate book IDs not allowed
+            return node; 
         }
         
         node->height = 1 + max(getHeight(node->left), getHeight(node->right));
         
         int balance = getBalance(node);
         
-        // Left Left Case
+        //LL
         if (balance > 1 && book.bookID < node->left->book.bookID) {
             return rightRotate(node);
         }
         
-        // Right Right Case
+        //RR
         if (balance < -1 && book.bookID > node->right->book.bookID) {
             return leftRotate(node);
         }
         
-        // Left Right Case
+        //LR
         if (balance > 1 && book.bookID > node->left->book.bookID) {
             node->left = leftRotate(node->left);
             return rightRotate(node);
         }
         
-        // Right Left Case
+        //RL
         if (balance < -1 && book.bookID < node->right->book.bookID) {
             node->right = rightRotate(node->right);
             return leftRotate(node);
@@ -158,23 +158,23 @@ private:
         
         int balance = getBalance(root);
         
-        // Left Left
+        //LL
         if (balance > 1 && getBalance(root->left) >= 0) {
             return rightRotate(root);
         }
         
-        // Left Right
+        //LR
         if (balance > 1 && getBalance(root->left) < 0) {
             root->left = leftRotate(root->left);
             return rightRotate(root);
         }
         
-        // Right Right
+        //RR
         if (balance < -1 && getBalance(root->right) <= 0) {
             return leftRotate(root);
         }
         
-        // Right Left
+        //RL
         if (balance < -1 && getBalance(root->right) > 0) {
             root->right = rightRotate(root->right);
             return leftRotate(root);
