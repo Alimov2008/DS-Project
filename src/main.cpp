@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <limits>
 #include <vector>
 #include "../include/AVLTree.hpp"
 #include "../include/JSONHandler.hpp"
@@ -193,35 +194,42 @@ private:
 public:
     LibraryManager() : jsonHandler("database/library_data.json") {}
     
-    void run() {
-        jsonHandler.loadFromFile(library);
+   void run() {
+    jsonHandler.loadFromFile(library);
+    
+    int choice;
+    do {
+        displayMenu();
+        std::cout << "Enter your choice: ";
         
-        int choice;
-        do {
-            displayMenu();
-            std::cout << "Enter your choice: ";
-            std::cin >> choice;
-            std::cin.ignore(); 
-            
-            if (choice == 1) {
-                addBook();
-            } else if (choice == 2) {
-                searchBooks();
-            } else if (choice == 3) {
-                issueBook();
-            } else if (choice == 4) {
-                returnBook();
-            } else if (choice == 5) {
-                displayAllBooks();
-            } else if (choice == 6) {
-                jsonHandler.saveToFile(library);
-                std::cout << "Thank you for using Library Management System!" << std::endl;
-            } else {
-                std::cout << "Invalid choice! Please try again." << std::endl;
-            }
-            std::cout << std::endl;
-        } while (choice != 6);
-    }
+        if (!(std::cin >> choice)) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+            std::cout << "Invalid input! Please enter a number (1-6).\n" << std::endl;
+            continue;
+        }
+        
+        std::cin.ignore(); 
+        
+        if (choice == 1) {
+            addBook();
+        } else if (choice == 2) {
+            searchBooks();
+        } else if (choice == 3) {
+            issueBook();
+        } else if (choice == 4) {
+            returnBook();
+        } else if (choice == 5) {
+            displayAllBooks();
+        } else if (choice == 6) {
+            jsonHandler.saveToFile(library);
+            std::cout << "Thank you for using Library Management System!" << std::endl;
+        } else {
+            std::cout << "Invalid choice! Please try again.\n" << std::endl;
+        }
+        
+    } while (choice != 6);
+}
 };
 
 int main() {
